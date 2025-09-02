@@ -1,6 +1,7 @@
 package ru.afonskiy.messenger.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -10,9 +11,9 @@ import ru.afonskiy.messenger.entity.MessageEntity;
 import ru.afonskiy.messenger.service.MessageService;
 import ru.afonskiy.messenger.jwt.util.JwtUtils;
 
-import java.security.Principal;
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -25,43 +26,46 @@ public class ChatWebSocketController {
     @MessageMapping("/chat")
     @SendToUser("/queue/ack")
     public String handleMessage(MessageEntity message, SimpMessageHeaderAccessor headers) {
-        String token = (String) headers.getSessionAttributes().get("jwt"); // Получаем jwt
-
+        String token = (String) Objects.requireNonNull(headers.getSessionAttributes()).get("jwt");
         if (!jwtUtils.validateToken(token)) {
             throw new RuntimeException("JWT токен не валиден");
         }
+        String senderUsername = jwtUtils.getUsernameFromToken(token);
 
-        String senderUsername = jwtUtils.getUsernameFromToken(token); // Получаем имя отправителя
         message.setSender(senderUsername);
         message.setTimestamp(Instant.now().toString());
-
-        messageService.createMessage(message);
-
         simpMessagingTemplate.convertAndSendToUser(
                 message.getRecipient(),
                 "/queue/messages",
                 message
         );
 
+        messageService.createMessage(message);
         return "Message sent to recipient";
     }
 
-    @MessageMapping("/fetchMessages")
+    @MessageMapping("/fetchUnreadMessages")
     @SendToUser("/queue/messages")
-    public List<MessageEntity> fetchMessages(String jwtToken, Principal principal) {
+    public List<MessageEntity> fetchUnreadMessages(@Header("authorization") String jwtToken) {
         if (!jwtUtils.validateToken(jwtToken)) {
             throw new RuntimeException("JWT токен не валиден");
         }
 
-
-
         String username = jwtUtils.getUsernameFromToken(jwtToken);
 
-        // Получаем непрочитанные сообщения пользователя из сервиса
-        List<MessageEntity> messages = messageService.getMessages(username);
+        return messageService.getUnreadMessages(username);
+    }
 
+    @MessageMapping("/fetchUserMessages")
+    @SendToUser("/queue/messages")
+    public List<MessageEntity> fetchMessagesFromUser(@Header("authorization") String jwtToken,
+                                                     @Header("sender") String sender) {
+        if (!jwtUtils.validateToken(jwtToken)) {
+            throw new RuntimeException("JWT токен не валиден");
+        }
 
-        return messages;
+        String username = jwtUtils.getUsernameFromToken(jwtToken);
+        return messageService.getMessages(username, sender.substring(1));
     }
 
 

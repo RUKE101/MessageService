@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "@stomp/stompjs": "^7.1.1",
+    "sockjs-client": "^1.6.1",
+    "ws": "^8.18.3"
+  },
+  "name": "h1st",
+  "version": "1.0.0",
+  "description": "",
+  "main": "ws.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
