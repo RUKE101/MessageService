@@ -1,4 +1,4 @@
-package ru.aafonskiy.messenger.util;
+package ru.afonskiy.messenger.jwt.util;
 
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.Jwt;

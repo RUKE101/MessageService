@@ -1,4 +1,4 @@
-package ru.aafonskiy.messenger.entity;
+package ru.afonskiy.messenger.entity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,9 +12,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class MessageEntity {
     @Id
     private String id;
-    private String message;
+    private String text;
     private String sender;
     @CreatedDate
     private String timestamp;
     private String recipient;
+
 }

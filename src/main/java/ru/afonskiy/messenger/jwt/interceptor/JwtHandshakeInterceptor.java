@@ -1,12 +1,13 @@
-package ru.aafonskiy.messenger.interceptor;
+package ru.afonskiy.messenger.jwt.interceptor;
 
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
-
 import java.util.Map;
 
+@Component
 public class JwtHandshakeInterceptor implements HandshakeInterceptor {
 
     @Override
