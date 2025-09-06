@@ -26,7 +26,7 @@ public class WebSocketEventListener {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String username = headerAccessor.getUser().getName();
 
-        List<MessageEntity> unreadMessages = messageService.getMessages(username);
+        List<MessageEntity> unreadMessages = messageService.getMessages(username,headerAccessor.getSessionId());
 
 
         for (MessageEntity message : unreadMessages) {
