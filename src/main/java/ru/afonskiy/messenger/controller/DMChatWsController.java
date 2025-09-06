@@ -17,7 +17,7 @@ import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
-public class ChatWebSocketController {
+public class DMChatWsController {
 
     private final MessageService messageService;
     private final SimpMessagingTemplate simpMessagingTemplate;

@@ -8,13 +8,15 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+
 @Getter
 @Setter
 @Builder
 @Document
 public class GroupEntity {
     @Id
-    private String id;
+    private String groupId;
+    private String ownerId;
     @NonNull
     private String nameOfGroup;
     private String DescriptionOfGroup;
