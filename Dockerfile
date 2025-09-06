@@ -1,5 +1,4 @@
-# Stage 1: Build
-FROM maven:3.9.6-eclipse-temurin-21 AS build
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
 
 # Копируем pom и скачиваем зависимости
@@ -11,10 +10,12 @@ COPY src ./src
 
 # Сборка приложения
 RUN mvn clean package -DskipTests
-FROM eclipse-temurin:21-jre
-# Устанавливаем /app как рабочую директорию
+
+FROM eclipse-temurin:17-jre
 WORKDIR /app
+
 # Копируем джарники
 COPY --from=build /app/target/*.jar app.jar
-# Запускаем
-ENTRYPOINT ["java","-jar","app.jar"]
+
+# Запуск с Parallel GC
+ENTRYPOINT ["java", "-XX:+UseParallelGC", "-jar", "app.jar"]

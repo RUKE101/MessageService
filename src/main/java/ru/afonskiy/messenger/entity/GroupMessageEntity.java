@@ -2,18 +2,20 @@ package ru.afonskiy.messenger.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
-@Document
 @Getter
 @Setter
-public class GroupMemberEntity {
+@Document
+public class GroupMessageEntity {
     @Id
     private String id;
-    private String uuidOfUser ;
-    private List<GroupRoles> groupRoles;
-    private List<String> groupId;
+    @CreatedDate
+    private LocalDateTime createdDate;
+    private String sender;
+    private String message;
 }
