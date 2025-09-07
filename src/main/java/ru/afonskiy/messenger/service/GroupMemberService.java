@@ -18,7 +18,7 @@ public class GroupMemberService {
     private final SendLogsService sendLogsService;
 
     public GroupMemberEntity createGroupMember(String groupId,String token) {
-        String userUuid = principalService.getCurrentUIID();
+        String userUuid = principalService.getCurrentUIID(token);
         try {
             GroupMemberEntity member = groupMemberRepository.findByUuidOfUser(userUuid);
             if (member == null) {

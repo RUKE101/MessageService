@@ -23,7 +23,7 @@ public class GroupControlWsController {
         if (!jwtUtils.validateToken(token)) {
             throw new RuntimeException("JWT токен не валиден");
         }
-        groupEntity.setOwnerId(jwtUtils.getCurrentUIID());
+        groupEntity.setOwnerId(jwtUtils.getCurrentUIID(token));
         groupService.createGroup(groupEntity, token);
 
 

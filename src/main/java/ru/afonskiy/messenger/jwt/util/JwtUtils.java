@@ -50,12 +50,8 @@ public class JwtUtils {
         }
     }
 
-    public String getCurrentUIID() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
-            throw new IllegalStateException("Authentication is null");
-        }
-        JwtAuthenticationToken authenticationToken = (JwtAuthenticationToken) authentication;
-        return authenticationToken.getToken().getClaimAsString("sub");
+    public String getCurrentUIID(String token) {
+        Jwt jwt = jwtDecoder.decode(token);
+        return jwt.getClaimAsString("sub");
     }
 }
