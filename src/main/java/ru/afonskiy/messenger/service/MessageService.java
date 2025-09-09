@@ -1,5 +1,7 @@
 package ru.afonskiy.messenger.service;
 
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -22,14 +24,31 @@ public class MessageService {
         message.setStatus(MessageStatus.UNREAD);
         mongoTemplate.save(message);
     }
-    public void updateMessage(String id,MessageEntity message) {
+    public void updateMessage(String id,String text, String username) {
         Query query = new Query(Criteria.where("id").is(id));
+        query.addCriteria(Criteria.where("sender").is(username));
         Update update = new Update()
-                .set("text", message.getText());
+                .set("text", text);
+        UpdateResult result = mongoTemplate.updateFirst(query, update, MessageEntity.class);
+        System.out.println("Matched: " + result.getMatchedCount() + ", Modified: " + result.getModifiedCount());
+
+        if (result.getMatchedCount() == 0) {
+            throw new RuntimeException("Message not found or user is not sender, update failed");
+        }
     }
 
-    public void deleteMessage(String id) {
-        Query query = new Query(Criteria.where("id").is(id));
+    public void deleteMessage(String id, String username) {
+        Query query = new Query(Criteria.where("id").is(id)
+                .orOperator(
+                        Criteria.where("sender").is(username),
+                        Criteria.where("receiver").is(username)
+                ));
+        DeleteResult result = mongoTemplate.remove(query, MessageEntity.class);
+
+        if (result.getDeletedCount() == 0) {
+            throw new RuntimeException("Message not found or user not authorized to delete");
+        }
+
         mongoTemplate.remove(query, MessageEntity.class);
     }
 

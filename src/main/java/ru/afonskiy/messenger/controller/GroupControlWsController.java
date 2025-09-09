@@ -9,6 +9,7 @@ import ru.afonskiy.messenger.entity.GroupEntity;
 import ru.afonskiy.messenger.jwt.util.JwtUtils;
 import ru.afonskiy.messenger.service.GroupService;
 
+import java.util.List;
 import java.util.Objects;
 
 @Controller
@@ -28,5 +29,16 @@ public class GroupControlWsController {
 
 
         return "Group created successfully";
+    }
+
+    @MessageMapping("/group/view")
+    @SendToUser("/queue/ack")
+    public List<GroupEntity> viewGroups(SimpMessageHeaderAccessor headers) {
+        String token = (String) Objects.requireNonNull(headers.getSessionAttributes()).get("jwt");
+        if (!jwtUtils.validateToken(token)) {
+            throw new RuntimeException("JWT токен не валиден");
+        }
+        String uuid = jwtUtils.getCurrentUIID(token);
+        return groupService.getUserGroups(uuid);
     }
 }

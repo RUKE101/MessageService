@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import ru.afonskiy.messenger.entity.GroupMessageEntity;
 import ru.afonskiy.messenger.repository.GroupMessageRepository;
@@ -29,10 +30,13 @@ public class GroupMessageService {
         }
     }
 
-    public List<GroupMessageEntity> getGroupMessages(String groupId) {
+    public List<GroupMessageEntity> getMessagesFromGroup(String userId, String groupId) {
+        if (!groupService.isUserInGroup(userId, groupId)) {
+            throw new AccessDeniedException("User is not a member of the group");
+        }
         Query query = new Query();
         query.addCriteria(Criteria.where("groupId").is(groupId));
-        return mongoTemplate.find(query, GroupMessageEntity.class);
 
+        return mongoTemplate.find(query, GroupMessageEntity.class);
     }
 }
