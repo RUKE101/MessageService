@@ -2,6 +2,7 @@ package ru.afonskiy.messenger.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -54,5 +55,35 @@ public class GroupChatWsController {
         String uuid = jwtUtils.getCurrentUIID(token);
 
         return messageService.getMessagesFromGroup(uuid, groupId);
+    }
+
+    @MessageMapping("/group/{groupId}/update")
+    @SendToUser("/queue/ack")
+    public String updateMessageFromGroup(@DestinationVariable String groupId, @Header("messageId") String messageId,
+                                         @Header("text") String newText,
+                                         SimpMessageHeaderAccessor headers) {
+        String token = (String) Objects.requireNonNull(headers.getSessionAttributes()).get("jwt");
+        if (!jwtUtils.validateToken(token)) {
+            throw new RuntimeException("JWT токен не валиден");
+        }
+        String userUuid = jwtUtils.getCurrentUIID(token);
+        String username = jwtUtils.getUsernameFromToken(token);
+        messageService.updateGroupMessage(messageId, groupId, userUuid, username, newText);
+        return "Message updated successfully";
+    }
+
+    @MessageMapping("/group/{groupId}/delete")
+    @SendToUser("/queue/messages")
+    public String deleteMessageFromGroup(@DestinationVariable String groupId,
+                                         @Header("messageId") String messageId,
+                                                           SimpMessageHeaderAccessor headers) {
+        String token = (String) Objects.requireNonNull(headers.getSessionAttributes()).get("jwt");
+        if (!jwtUtils.validateToken(token)) {
+            throw new RuntimeException("JWT токен не валиден");
+        }
+        String userUuid = jwtUtils.getCurrentUIID(token);
+        String username = jwtUtils.getUsernameFromToken(token);
+        messageService.deleteGroupMessage(messageId, groupId, userUuid, username);
+        return "Message deleted successfully";
     }
 }

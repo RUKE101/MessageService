@@ -30,7 +30,6 @@ public class MessageService {
         Update update = new Update()
                 .set("text", text);
         UpdateResult result = mongoTemplate.updateFirst(query, update, MessageEntity.class);
-        System.out.println("Matched: " + result.getMatchedCount() + ", Modified: " + result.getModifiedCount());
 
         if (result.getMatchedCount() == 0) {
             throw new RuntimeException("Message not found or user is not sender, update failed");
