@@ -39,29 +39,19 @@ public class GroupService {
     }
 
     public GroupEntity createGroup(GroupEntity groupEntity,String token) {
-//        try {
             groupEntity.addParticipantId(jwtUtils.getCurrentUIID(token));
             groupRepository.save(groupEntity);
             return groupEntity;
-//        } catch (Exception e) {
-//            sendLogsService.sendLogs("Create group failed", token, e.getMessage());
-//            throw new RuntimeException(e);
-//        }
     }
 
     public GroupEntity updateGroup(String id, String nameOfGroup, String descriptionOfGroup, String token) {
-        try{
-            GroupEntity groupEntity = groupRepository.findById(id).orElseThrow(
-                    () -> new RuntimeException("Group id not found")
-            );
-            groupEntity.setNameOfGroup(nameOfGroup);
-            groupEntity.setDescriptionOfGroup(descriptionOfGroup);
-            groupRepository.save(groupEntity);
-            return groupEntity;
-        } catch (Exception e){
-            sendLogsService.sendLogs("Update group failed", e.getMessage(), token);
-            throw new RuntimeException(e);
-        }
-    }
 
+        GroupEntity groupEntity = groupRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Group id not found")
+        );
+        groupEntity.setNameOfGroup(nameOfGroup);
+        groupEntity.setDescriptionOfGroup(descriptionOfGroup);
+        groupRepository.save(groupEntity);
+        return groupEntity;
+    }
 }

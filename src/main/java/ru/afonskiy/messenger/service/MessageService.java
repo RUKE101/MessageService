@@ -24,6 +24,7 @@ public class MessageService {
         message.setStatus(MessageStatus.UNREAD);
         mongoTemplate.save(message);
     }
+
     public void updateMessage(String id,String text, String username) {
         Query query = new Query(Criteria.where("id").is(id));
         query.addCriteria(Criteria.where("sender").is(username));
