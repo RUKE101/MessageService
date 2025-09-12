@@ -1,4 +1,4 @@
-package ru.afonskiy.messenger.service;
+package ru.afonskiy.messenger.service.misc;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

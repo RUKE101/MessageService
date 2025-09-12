@@ -1,4 +1,4 @@
-package ru.afonskiy.messenger.service;
+package ru.afonskiy.messenger.service.dm;
 
 import com.mongodb.client.result.UpdateResult;
 import lombok.RequiredArgsConstructor;
@@ -8,9 +8,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.afonskiy.messenger.entity.MessageEntity;
+import ru.afonskiy.messenger.entity.dm.MessageEntity;
 import ru.afonskiy.messenger.entity.MessageStatus;
-import ru.afonskiy.messenger.repository.MessageServiceRepository;
+import ru.afonskiy.messenger.repository.dm.MessageServiceRepository;
 
 import java.util.List;
 
@@ -26,11 +26,13 @@ public class MessageService {
         messageServiceRepository.save(message);
     }
 
-    public void updateMessage(String id, String text, String username) {
+    public void updateMessage(String id,String text, String username) {
         Query query = new Query(Criteria.where("id").is(id));
         query.addCriteria(Criteria.where("sender").is(username));
-        Update update = new Update().set("text", text);
+        Update update = new Update()
+                .set("text", text);
         UpdateResult result = mongoTemplate.updateFirst(query, update, MessageEntity.class);
+
         if (result.getMatchedCount() == 0) {
             throw new RuntimeException("Message not found or user is not sender, update failed");
         }

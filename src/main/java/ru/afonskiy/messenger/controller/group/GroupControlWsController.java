@@ -1,19 +1,21 @@
-package ru.afonskiy.messenger.controller;
+package ru.afonskiy.messenger.controller.group;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.annotation.SendToUser;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
-import ru.afonskiy.messenger.entity.GroupEntity;
+import ru.afonskiy.messenger.entity.group.GroupEntity;
 import ru.afonskiy.messenger.jwt.util.JwtUtils;
-import ru.afonskiy.messenger.service.GroupService;
+import ru.afonskiy.messenger.service.group.GroupService;
 
 import java.util.List;
 import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
+@Component("GroupsControlWsController")
 public class GroupControlWsController {
     private final GroupService groupService;
     private final JwtUtils jwtUtils;

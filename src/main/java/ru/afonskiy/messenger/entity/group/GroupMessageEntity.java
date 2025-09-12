@@ -1,4 +1,4 @@
-package ru.afonskiy.messenger.entity;
+package ru.afonskiy.messenger.entity.group;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,17 +6,15 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Setter
 @Getter
+@Setter
 @Document
-public class MessageEntity {
+public class GroupMessageEntity {
     @Id
     private String id;
     private String text;
     private String sender;
     @CreatedDate
     private String timestamp;
-    private String recipient;
-    private MessageStatus status;
-
+    private String groupId;
 }

@@ -1,4 +1,4 @@
-package ru.afonskiy.messenger.service;
+package ru.afonskiy.messenger.service.misc;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

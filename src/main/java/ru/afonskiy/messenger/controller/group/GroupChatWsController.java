@@ -1,4 +1,4 @@
-package ru.afonskiy.messenger.controller;
+package ru.afonskiy.messenger.controller.group;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -7,11 +7,12 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
-import ru.afonskiy.messenger.entity.GroupMessageEntity;
+import ru.afonskiy.messenger.entity.group.GroupMessageEntity;
 import ru.afonskiy.messenger.jwt.util.JwtUtils;
-import ru.afonskiy.messenger.service.GroupMessageService;
-import ru.afonskiy.messenger.service.GroupService;
+import ru.afonskiy.messenger.service.group.GroupMessageService;
+import ru.afonskiy.messenger.service.group.GroupService;
 
 import java.time.Instant;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
+@Component("ChatWsControllerGroups")
 public class GroupChatWsController {
     private final GroupMessageService messageService;
     private final GroupService groupService;
@@ -40,7 +42,7 @@ public class GroupChatWsController {
         message.setTimestamp(Instant.now().toString());
         simpMessagingTemplate.convertAndSend("/topic/group/" + groupId, message);
 
-        messageService.sendMessage(message);
+        messageService.sendMessage(message, token);
         return "Message sent to group";
     }
 
@@ -67,7 +69,8 @@ public class GroupChatWsController {
             throw new RuntimeException("JWT токен не валиден");
         }
         String userUuid = jwtUtils.getCurrentUIID(token);
-        messageService.updateGroupMessage(messageId, groupId, userUuid, newText);
+        String username = jwtUtils.getUsernameFromToken(token);
+        messageService.updateGroupMessage(messageId, groupId, userUuid, username, newText);
         return "Message updated successfully";
     }
 
@@ -81,7 +84,8 @@ public class GroupChatWsController {
             throw new RuntimeException("JWT токен не валиден");
         }
         String userUuid = jwtUtils.getCurrentUIID(token);
-        messageService.deleteGroupMessage(messageId, groupId, userUuid);
+        String username = jwtUtils.getUsernameFromToken(token);
+        messageService.deleteGroupMessage(messageId, groupId, userUuid, username);
         return "Message deleted successfully";
     }
 }

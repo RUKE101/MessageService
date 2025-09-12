@@ -1,4 +1,4 @@
-package ru.afonskiy.messenger.entity;
+package ru.afonskiy.messenger.entity.group;
 
 import lombok.Getter;
 import lombok.Setter;

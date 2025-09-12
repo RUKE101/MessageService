@@ -1,4 +1,4 @@
-package ru.afonskiy.messenger.controller;
+package ru.afonskiy.messenger.controller.dm;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.Header;
@@ -7,8 +7,8 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
-import ru.afonskiy.messenger.entity.MessageEntity;
-import ru.afonskiy.messenger.service.MessageService;
+import ru.afonskiy.messenger.entity.dm.MessageEntity;
+import ru.afonskiy.messenger.service.dm.MessageService;
 import ru.afonskiy.messenger.jwt.util.JwtUtils;
 
 import java.time.Instant;

@@ -1,4 +1,4 @@
-package ru.afonskiy.messenger.service;
+package ru.afonskiy.messenger.service.group;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -7,8 +7,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.afonskiy.messenger.entity.GroupMessageEntity;
-import ru.afonskiy.messenger.repository.GroupMessageRepository;
+import ru.afonskiy.messenger.entity.group.GroupMessageEntity;
+import ru.afonskiy.messenger.repository.group.GroupMessageRepository;
+import ru.afonskiy.messenger.service.misc.SendLogsService;
 
 import java.util.List;
 import java.util.Optional;

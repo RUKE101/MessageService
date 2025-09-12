@@ -1,7 +1,7 @@
-package ru.afonskiy.messenger.repository;
+package ru.afonskiy.messenger.repository.dm;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import ru.afonskiy.messenger.entity.MessageEntity;
+import ru.afonskiy.messenger.entity.dm.MessageEntity;
 
 import java.util.Optional;
 
