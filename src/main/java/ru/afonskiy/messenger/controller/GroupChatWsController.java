@@ -40,7 +40,7 @@ public class GroupChatWsController {
         message.setTimestamp(Instant.now().toString());
         simpMessagingTemplate.convertAndSend("/topic/group/" + groupId, message);
 
-        messageService.sendMessage(message, token);
+        messageService.sendMessage(message);
         return "Message sent to group";
     }
 
@@ -67,8 +67,7 @@ public class GroupChatWsController {
             throw new RuntimeException("JWT токен не валиден");
         }
         String userUuid = jwtUtils.getCurrentUIID(token);
-        String username = jwtUtils.getUsernameFromToken(token);
-        messageService.updateGroupMessage(messageId, groupId, userUuid, username, newText);
+        messageService.updateGroupMessage(messageId, groupId, userUuid, newText);
         return "Message updated successfully";
     }
 
@@ -82,8 +81,7 @@ public class GroupChatWsController {
             throw new RuntimeException("JWT токен не валиден");
         }
         String userUuid = jwtUtils.getCurrentUIID(token);
-        String username = jwtUtils.getUsernameFromToken(token);
-        messageService.deleteGroupMessage(messageId, groupId, userUuid, username);
+        messageService.deleteGroupMessage(messageId, groupId, userUuid);
         return "Message deleted successfully";
     }
 }

@@ -15,14 +15,19 @@ import java.util.Optional;
 public class GroupService {
 
     private final GroupRepository groupRepository;
-    private final SendLogsService sendLogsService;
     private final JwtUtils jwtUtils;
 
     public List<GroupEntity> getUserGroups(String userId) {
+        /*
+        Метод для получения всех юзеров в группе.
+         */
         return groupRepository.findByParticipantsIdsContaining(userId);
     }
 
     public boolean isUserInGroup(String userId, String groupId) {
+        /*
+        Проверка участника в группе.
+         */
         GroupEntity group = groupRepository.findById(groupId).orElse(null);
         if (group == null) {
             return false;
@@ -31,6 +36,9 @@ public class GroupService {
     }
 
     public GroupEntity getGroupById(String groupId) {
+        /*
+        Получение группы по ID
+         */
         Optional<GroupEntity> group = groupRepository.findById(groupId);
         if (group.isEmpty()) {
             throw new NotFoundException("Not found group with this id: " + groupId);
@@ -39,13 +47,18 @@ public class GroupService {
     }
 
     public GroupEntity createGroup(GroupEntity groupEntity,String token) {
+        /*
+        Метод для создания группы
+         */
             groupEntity.addParticipantId(jwtUtils.getCurrentUIID(token));
             groupRepository.save(groupEntity);
             return groupEntity;
     }
 
-    public GroupEntity updateGroup(String id, String nameOfGroup, String descriptionOfGroup, String token) {
-
+    public GroupEntity updateGroup(String id, String nameOfGroup, String descriptionOfGroup) {
+        /*
+        Метод для обновления группы
+         */
         GroupEntity groupEntity = groupRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Group id not found")
         );

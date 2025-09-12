@@ -1,9 +1,7 @@
 package ru.afonskiy.messenger.service;
 
-import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import lombok.RequiredArgsConstructor;
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -22,23 +20,24 @@ import java.util.List;
 public class GroupMessageService {
     private final GroupMessageRepository repository;
     private final GroupService groupService;
-    private final SendLogsService sendLogsService;
     private final MongoTemplate mongoTemplate;
 
+
     @Transactional
-    public GroupMessageEntity sendMessage(GroupMessageEntity message, String token) {
-        try {
-            isUserInGroup(message.getSender(), message.getGroupId());
-             repository.save(message);
-            return message;
-        } catch (Exception e) {
-            sendLogsService.sendLogs("Create group failed", token, e.getMessage());
-            throw new RuntimeException(e);
-        }
+    public GroupMessageEntity sendMessage(GroupMessageEntity message) {
+        /*
+        Метод для сохранения сообщения в mongoDB
+         */
+        isUserInGroup(message.getSender(), message.getGroupId());
+        repository.save(message);
+        return message;
     }
 
     @Transactional
-    public void updateGroupMessage(String messageId, String groupId, String userId, String username, String newText) {
+    public void updateGroupMessage(String messageId, String groupId, String userId, String newText) {
+        /*
+        Метод для Обновления сообщения в mongoDB
+         */
         isUserInGroup(userId, groupId);
 
         Query query = new Query();
@@ -52,28 +51,26 @@ public class GroupMessageService {
         }
     }
 
-    public void deleteGroupMessage(String messageId, String groupId, String userId, String username) {
+    public void deleteGroupMessage(String messageId, String groupId, String userId) {
+        /*
+        Метод для удаления сообщения
+         */
         isUserInGroup(userId, groupId);
-        Query query = new Query();
-        query.addCriteria(Criteria.where("id").is(messageId));
-
-        DeleteResult result = mongoTemplate.remove(query, MessageEntity.class);
-        if (result.getDeletedCount() == 0) {
-            throw new RuntimeException("Message not found or user not authorized to delete");
-        }
-
-        mongoTemplate.remove(query, MessageEntity.class);
+        repository.deleteById(messageId);
     }
 
     public List<GroupMessageEntity> getMessagesFromGroup(String userId, String groupId) {
+        /*
+        Метод для получения всех сообщений в группе
+         */
         isUserInGroup(userId, groupId);
-        Query query = new Query();
-        query.addCriteria(Criteria.where("groupId").is(groupId));
-
-        return mongoTemplate.find(query, GroupMessageEntity.class);
+        return repository.findByGroupId(groupId);
     }
 
     public void isUserInGroup(String userId, String groupId) {
+        /*
+        Проверка участника в группе
+         */
         if (!groupService.isUserInGroup(userId, groupId)) {
             throw new AccessDeniedException("User is not a member of the group");
         }

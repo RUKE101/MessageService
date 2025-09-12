@@ -75,8 +75,7 @@ public class DMChatWsController {
             throw new RuntimeException("JWT токен не валиден");
         }
 
-        String username = jwtUtils.getUsernameFromToken(jwtToken);
-        messageService.deleteMessage(messageId, username);
+        messageService.deleteMessage(messageId);
         return "Message deleted successfully";
     }
 

@@ -19,7 +19,11 @@ public class JwtHandshakeHandler extends DefaultHandshakeHandler {
     }
 
     @Override
-    protected Principal determineUser(@NonNull ServerHttpRequest request, @NonNull WebSocketHandler wsHandler, @NonNull Map<String, Object> attributes) {
+    protected Principal determineUser(@NonNull ServerHttpRequest request,
+                                      @NonNull WebSocketHandler wsHandler, @NonNull Map<String, Object> attributes) {
+        /*
+        Метод для получения username
+         */
         String token = (String) attributes.get("jwt");
         if (token != null && jwtUtils.validateToken(token)) {
             String username = jwtUtils.getUsernameFromToken(token);
